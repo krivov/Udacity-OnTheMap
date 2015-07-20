@@ -39,8 +39,14 @@ class LoginViewController: UIViewController {
         self.unsubscribeToKeyboardNotifications()
     }
     
+    // MARK: - Login actions
     @IBAction func loginAction(sender: UIButton) {
         self.showActivityIndicator()
+        
+        //hide keyboard
+        self.view.endEditing(true)
+        
+        //request to login user
         UdacityClient.sharedInstance().userLogin(emailField.text, password: passwordField.text) { (result, error) -> Void in
             
             if error != nil {
@@ -56,19 +62,32 @@ class LoginViewController: UIViewController {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.hideActivityIndicator()
                     println("OK - key = \(appDelegate.studentKey)")
+                    self.goToNextView()
                 })
             }
         }
     }
-
-    @IBAction func signupAction(sender: UIButton) {
-        
-    }
-
+    
+    // TODO: Login with facebook
     @IBAction func loginFacebookAction(sender: UIButton) {
         
     }
+
+    // MARK: - Open signup url
+    @IBAction func signupAction(sender: UIButton) {
+        // set url
+        let signUpURL = "https://www.udacity.com/account/auth#!/signup"
+        // open url in browser
+        UIApplication.sharedApplication().openURL(NSURL(string: signUpURL)!)
+    }
     
+    // MARK: - go to next view
+    func goToNextView() {
+        var tabBarController:UITabBarController = self.storyboard!.instantiateViewControllerWithIdentifier("tabBarController") as! UITabBarController
+        self.presentViewController(tabBarController, animated: true, completion: nil)
+    }
+    
+    // MARK: - Activity indicator
     func showActivityIndicator() {
         activityIndicator.hidden = false
         activityIndicator.startAnimating()

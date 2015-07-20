@@ -301,7 +301,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="neO-C0-FIW">
             <objects>
-                <tabBarController id="gQp-AF-X75" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="tabBarController" id="gQp-AF-X75" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="MY4-rr-4TN">
