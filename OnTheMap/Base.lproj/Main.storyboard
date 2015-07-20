@@ -30,7 +30,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XdB-9V-cOR">
                                 <rect key="frame" x="42" y="236" width="244" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dl6-yq-pQs">
                                 <rect key="frame" x="141" y="306" width="38" height="30"/>
@@ -39,6 +39,15 @@
                                 </state>
                                 <connections>
                                     <action selector="loginAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="qvX-ng-rag"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3m0-J2-3uf">
+                                <rect key="frame" x="84" y="488" width="152" height="30"/>
+                                <state key="normal" title="Sign in with Facebook">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginFacebookAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7OY-CI-ccG"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Don't have an account?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeW-qd-Zq7">
@@ -57,21 +66,17 @@
                                     <segue destination="gQp-AF-X75" kind="show" id="t1u-1H-Lmn"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3m0-J2-3uf">
-                                <rect key="frame" x="84" y="488" width="152" height="30"/>
-                                <state key="normal" title="Sign in with Facebook">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="loginFacebookAction:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7OY-CI-ccG"/>
-                                </connections>
-                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="lOp-zF-ePy">
+                                <rect key="frame" x="150" y="311" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="lOp-zF-ePy" id="lf1-1j-l4c"/>
                         <outlet property="emailField" destination="f2u-Ic-7DU" id="nwf-iC-yod"/>
+                        <outlet property="loginButton" destination="dl6-yq-pQs" id="CSz-Vz-BB0"/>
                         <outlet property="passwordField" destination="XdB-9V-cOR" id="Uke-KL-edr"/>
                     </connections>
                 </viewController>
@@ -319,7 +324,7 @@
         <image name="tabbar-map" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="A05-XN-A3M"/>
+        <segue reference="t1u-1H-Lmn"/>
         <segue reference="0O8-i5-SVx"/>
     </inferredMetricsTieBreakers>
 </document>
