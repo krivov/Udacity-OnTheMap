@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import MapKit
 
 // MARK: - Convenient Resource Methods
 
@@ -63,6 +64,20 @@ extension UdacityClient {
                     }
                 }
             }
+        }
+    }
+    
+    // set annotations for map with users data
+    func createAnnotations(users: [StudentInformation], mapView: MKMapView) {
+        for user in users {
+            // set pin location
+            var annotation = MKPointAnnotation()
+            
+            annotation.coordinate = CLLocationCoordinate2DMake(user.latitude, user.longitude)
+            annotation.title = "\(user.firstName) \(user.lastName)"
+            annotation.subtitle = user.mediaURL
+            
+            mapView.addAnnotation(annotation)
         }
     }
 }

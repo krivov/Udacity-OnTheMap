@@ -7,35 +7,86 @@
 //
 
 import UIKit
+import MapKit
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, MKMapViewDelegate {
 
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    @IBOutlet weak var map: MKMapView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // add pin button
+        var pinButton : UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.Plain, target: self, action: "pinLocation")
+        
+        // add refresh button
+        var refreshButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "getStudentLocationsForMap")
+        
+        
+        // add the buttons
+        self.navigationItem.rightBarButtonItems = [refreshButton, pinButton]
     }
     
-    @IBAction func addPinAction(sender: UIButton) {
+    override func viewWillAppear(animated: Bool) {
+        self.reloadUsersData()
+    }
+    
+    func addPinAction() {
         
     }
     
-    @IBAction func reloadAction(sender: UIButton) {
-        
+    func reloadAction() {
+        self.reloadUsersData()
     }
     
     @IBAction func logoutAction(sender: UIBarButtonItem) {
         
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    //reload users data
+    func reloadUsersData() {
+        var student = [StudentInformation]()
+        UdacityClient.sharedInstance().getStudentLocations { users, error in
+            if let usersData =  users {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.usersData = usersData
+                    UdacityClient.sharedInstance().createAnnotations(usersData, mapView: self.map)
+                })
+            } else {
+                if error != nil {
+                    UdacityClient.sharedInstance().showAlert(error!, viewController: self)
+                }
+            }
+        }
     }
-    */
+
+    // setup pin properties
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        if annotation is MKPointAnnotation {
+            let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+            pinView.pinColor = .Red
+            pinView.canShowCallout = true
+            
+            // pin button
+            let pinButton = UIButton.buttonWithType(UIButtonType.InfoLight) as! UIButton
+            pinButton.frame.size.width = 44
+            pinButton.frame.size.height = 44
+            
+            pinView.rightCalloutAccessoryView = pinButton
+            
+            return pinView
+        }
+        return nil
+    }
+    
+    // click to pin
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+        // open url
+        UdacityClient.sharedInstance().openURL(view.annotation.subtitle!)
+    }
+
 
 }
