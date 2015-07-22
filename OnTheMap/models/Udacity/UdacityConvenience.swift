@@ -46,4 +46,23 @@ extension UdacityClient {
             }
         }
     }
+    
+    // download student locations
+    func getStudentLocations(completionHandler: (result: [StudentInformation]?, error: NSError?) -> Void) {
+        
+        // make the request
+        let task = taskForGETMethod(UdacityClient.RequestToServer.parse, method: Methods.limit, parameters: ["limit":200]) { (result, error) -> Void in
+            if error != nil {
+                completionHandler(result: nil, error: error)
+            }
+            else {
+                if let locations = result as? [NSObject: NSObject] {
+                    if let usersResult = locations["results"] as? [[String : AnyObject]] {
+                        var studentsData = StudentInformation.convertFromDictionaries(usersResult)
+                        completionHandler(result: studentsData, error: nil)
+                    }
+                }
+            }
+        }
+    }
 }

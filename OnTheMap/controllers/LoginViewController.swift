@@ -51,7 +51,7 @@ class LoginViewController: UIViewController {
             
             if error != nil {
                 dispatch_async(dispatch_get_main_queue(), {
-                    self.showAlert(error!)
+                    UdacityClient.sharedInstance().showAlert(error!, viewController: self)
                     self.hideActivityIndicator()
                 })
             }
@@ -70,7 +70,7 @@ class LoginViewController: UIViewController {
     
     // TODO: Login with facebook
     @IBAction func loginFacebookAction(sender: UIButton) {
-        
+        self.goToNextView()
     }
 
     // MARK: - Open signup url
@@ -98,18 +98,6 @@ class LoginViewController: UIViewController {
         activityIndicator.hidden = true
         activityIndicator.stopAnimating()
         loginButton.hidden = false
-    }
-    
-    // MARK: - Show error alert
-    func showAlert(message: NSError) {
-        var errMessage = message.localizedDescription
-        
-        var alert = UIAlertController(title: nil, message: errMessage, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
-            alert.dismissViewControllerAnimated(true, completion: nil)
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     // MARK: - Keyboard Fixes

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4819F7691B602BFC00DD4A8C /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4819F7681B602BFC00DD4A8C /* StudentInformation.swift */; };
 		484493391B5C0BF1007E6B29 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484493381B5C0BF1007E6B29 /* AppDelegate.swift */; };
 		4844933E1B5C0BF1007E6B29 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4844933C1B5C0BF1007E6B29 /* Main.storyboard */; };
 		484493401B5C0BF1007E6B29 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4844933F1B5C0BF1007E6B29 /* Images.xcassets */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4819F7681B602BFC00DD4A8C /* StudentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StudentInformation.swift; path = models/Udacity/StudentInformation.swift; sourceTree = "<group>"; };
 		484493331B5C0BF1007E6B29 /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		484493371B5C0BF1007E6B29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		484493381B5C0BF1007E6B29 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				484493651B5D87AB007E6B29 /* UdacityConstants.swift */,
 				484493691B5D885E007E6B29 /* UdacityClient.swift */,
 				4844936B1B5D92F1007E6B29 /* UdacityConvenience.swift */,
+				4819F7681B602BFC00DD4A8C /* StudentInformation.swift */,
 			);
 			name = Udacity;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				4844936C1B5D92F1007E6B29 /* UdacityConvenience.swift in Sources */,
 				4844935F1B5C5E14007E6B29 /* MapViewController.swift in Sources */,
 				484493611B5C5E37007E6B29 /* PostViewController.swift in Sources */,
+				4819F7691B602BFC00DD4A8C /* StudentInformation.swift in Sources */,
 				4844936A1B5D885E007E6B29 /* UdacityClient.swift in Sources */,
 				484493661B5D87AB007E6B29 /* UdacityConstants.swift in Sources */,
 			);
@@ -461,6 +465,7 @@
 				484493541B5C0BF1007E6B29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		484493551B5C0BF1007E6B29 /* Build configuration list for PBXNativeTarget "OnTheMapTests" */ = {
 			isa = XCConfigurationList;
@@ -469,6 +474,7 @@
 				484493571B5C0BF1007E6B29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

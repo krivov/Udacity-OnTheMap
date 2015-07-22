@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class UdacityClient : NSObject {
     
@@ -36,7 +37,13 @@ class UdacityClient : NSObject {
         /* Build the URL and configure the request */
         let urlString = baseUrl + method + UdacityClient.escapedParameters(mutableParameters)
         let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
+        let request = NSMutableURLRequest(URL: url)
+        
+        if (server == RequestToServer.parse) {
+            request.addValue(Constants.parseAppId, forHTTPHeaderField: "X-Parse-Application-Id")
+            request.addValue(Constants.parseApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
         
         /* Make the request */
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
@@ -153,6 +160,23 @@ class UdacityClient : NSObject {
         }
         
         return (!urlVars.isEmpty ? "?" : "") + join("&", urlVars)
+    }
+    
+    // MARK: - Show error alert
+    func showAlert(message: NSError, viewController: AnyObject) {
+        var errMessage = message.localizedDescription
+        
+        var alert = UIAlertController(title: nil, message: errMessage, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
+            alert.dismissViewControllerAnimated(true, completion: nil)
+        }))
+        
+        viewController.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func openURL(urlString: String) {
+        let url = NSURL(string: urlString)
+        UIApplication.sharedApplication().openURL(url!)
     }
     
     // MARK: - Shared Instance

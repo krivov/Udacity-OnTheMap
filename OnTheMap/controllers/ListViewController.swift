@@ -8,35 +8,81 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
+class ListViewController: UITableViewController {
+    
+    @IBOutlet weak var mainTable: UITableView!
+    
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        var pinButton : UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.Plain, target: self, action: "addPinAction")
+        
+        var refreshButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "reloadAction")
+        
+        
+        // add the buttons
+        self.navigationItem.rightBarButtonItems = [refreshButton, pinButton]
     }
     
-    @IBAction func addPinAction(sender: UIButton) {
+    override func viewWillAppear(animated: Bool) {
+        self.reloadUsersData()
+    }
+    
+    //action - add location for current user
+    func addPinAction() {
         
     }
     
-    @IBAction func reloadAction(sender: UIButton) {
-        
+    //action - reload users location
+    func reloadAction() {
+        self.reloadUsersData()
     }
     
+    //action - logout
     @IBAction func logoutAction(sender: UIBarButtonItem) {
         
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    //reload users data
+    func reloadUsersData() {
+        var student = [StudentInformation]()
+        UdacityClient.sharedInstance().getStudentLocations { users, error in
+            if let usersData =  users {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.usersData = usersData
+                    self.mainTable.reloadData()
+                })
+            } else {
+                if error != nil {
+                    UdacityClient.sharedInstance().showAlert(error!, viewController: self)
+                }
+            }
+        }
     }
-    */
-
+    
+    // MARK: - tableView functions
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("UserData", forIndexPath: indexPath) as! UITableViewCell
+        
+        // set cell data
+        let firstName = appDelegate.usersData[indexPath.row].firstName
+        let lastName = appDelegate.usersData[indexPath.row].lastName
+        
+        cell.textLabel?.text = "\(firstName) \(lastName)"
+        cell.imageView?.image = UIImage(named: "pin")
+        
+        return cell
+    }
+    
+    // open url in safari when click
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        UdacityClient.sharedInstance().openURL(appDelegate.usersData[indexPath.row].mediaURL)
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return appDelegate.usersData.count
+    }
 }

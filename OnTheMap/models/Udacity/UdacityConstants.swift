@@ -31,6 +31,8 @@ extension UdacityClient {
         static let CreateSession : String = "session"
         // get public users data
         static let Users : String = "users/"
+        // parse limit
+        static let limit : String = ""
     }
     
     // MARK: - JSON Body Keys
