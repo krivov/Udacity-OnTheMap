@@ -52,7 +52,17 @@ class UdacityClient : NSObject {
             if downloadError != nil {
                 completionHandler(result: nil, error: downloadError)
             } else {
-                UdacityClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                var newData: NSData?
+                newData = nil
+                if (server == RequestToServer.udacity) {
+                    newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                }
+                if newData != nil {
+                    UdacityClient.parseJSONWithCompletionHandler(newData!, completionHandler: completionHandler)
+                }
+                else {
+                    UdacityClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                }
             }
         }
         
@@ -83,30 +93,35 @@ class UdacityClient : NSObject {
         let request = NSMutableURLRequest(URL: url)
         var jsonifyError: NSError? = nil
         request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        if (server == RequestToServer.parse) {
+            request.addValue(Constants.parseAppId, forHTTPHeaderField: "X-Parse-Application-Id")
+            request.addValue(Constants.parseApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        } else {
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+        }
         
         /* Make the request */
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
             
             /* Parse the data and use the data (happens in completion handler) */
-            var newData: NSData?
-            newData = nil
-            if subdata > 0 {
-                newData = data.subdataWithRange(NSMakeRange(subdata, data.length - subdata))
-            }
-            if newData != nil {
-                UdacityClient.parseJSONWithCompletionHandler(newData!, completionHandler: completionHandler)
-            }
-            else {
-                UdacityClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
-            }
-            
             if downloadError != nil {
                 completionHandler(result: nil, error: downloadError)
             } else {
-                UdacityClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                var newData: NSData?
+                newData = nil
+                if subdata > 0 {
+                    newData = data.subdataWithRange(NSMakeRange(subdata, data.length - subdata))
+                }
+                if newData != nil {
+                    UdacityClient.parseJSONWithCompletionHandler(newData!, completionHandler: completionHandler)
+                }
+                else {
+                    UdacityClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                }
             }
         }
         
@@ -147,15 +162,17 @@ class UdacityClient : NSObject {
         var urlVars = [String]()
         
         for (key, value) in parameters {
+            if(!key.isEmpty) {
+                /* Make sure that it is a string value */
+                let stringValue = "\(value)"
+                
+                /* Escape it */
+                let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+                
+                /* Append it */
+                urlVars += [key + "=" + "\(escapedValue!)"]
+            }
             
-            /* Make sure that it is a string value */
-            let stringValue = "\(value)"
-            
-            /* Escape it */
-            let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
-            
-            /* Append it */
-            urlVars += [key + "=" + "\(escapedValue!)"]
             
         }
         

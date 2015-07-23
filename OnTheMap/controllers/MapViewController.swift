@@ -19,14 +19,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
 
         // add pin button
-        var pinButton : UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.Plain, target: self, action: "pinLocation")
+        var pinButton : UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.Plain, target: self, action: "addPinAction")
         
         // add refresh button
-        var refreshButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "getStudentLocationsForMap")
+        var refreshButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "reloadAction")
         
         
         // add the buttons
         self.navigationItem.rightBarButtonItems = [refreshButton, pinButton]
+        
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Done, target: self, action: "logout")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -34,15 +37,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func addPinAction() {
-        
+        var postController:UIViewController = self.storyboard!.instantiateViewControllerWithIdentifier("postView") as! UIViewController
+        //self.presentViewController(postController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(postController, animated: true)
     }
     
     func reloadAction() {
         self.reloadUsersData()
-    }
-    
-    @IBAction func logoutAction(sender: UIBarButtonItem) {
-        
     }
     
     //reload users data
@@ -87,6 +88,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // open url
         UdacityClient.sharedInstance().openURL(view.annotation.subtitle!)
     }
-
-
+    
+    func logout() {
+        UdacityClient.sharedInstance().logout(self)
+    }
 }

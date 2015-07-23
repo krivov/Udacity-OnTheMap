@@ -32,7 +32,8 @@ class ListViewController: UITableViewController {
     
     //action - add location for current user
     func addPinAction() {
-        
+        var postController:UIViewController = self.storyboard!.instantiateViewControllerWithIdentifier("postView") as! UIViewController
+        self.presentViewController(postController, animated: true, completion: nil)
     }
     
     //action - reload users location

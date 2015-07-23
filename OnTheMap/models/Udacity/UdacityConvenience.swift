@@ -67,6 +67,40 @@ extension UdacityClient {
         }
     }
     
+    // get user data from udacity
+    func getUserPublicData(userId: String, completionHandler: (result: UserInformation?, error: NSError?) -> Void) {
+        // method
+        var method = Methods.Users + userId
+        
+        // mak the request
+        let task = taskForGETMethod(RequestToServer.udacity, method: Methods.Users + userId, parameters: ["":""]) { (result, error) -> Void in
+            if error != nil {
+                completionHandler(result: nil, error: error)
+            }
+            else {
+                if let data = result["user"] as? NSDictionary {
+                    var studentsInfo = UserInformation(dictionary: data)
+                    completionHandler(result: studentsInfo, error: nil)
+                }
+            }
+        }
+    }
+    
+    // post user location to parse
+    func sendUserLocation(userDetails: [String : AnyObject], completionHandler: (result: AnyObject?, error: NSError?) -> Void) {
+        let parameters = userDetails
+        
+        // make the request
+        let task = taskForPOSTMethod(RequestToServer.parse, method: "", parameters: ["":""], jsonBody: userDetails, subdata: 0, completionHandler: { (result, error) -> Void in
+            if error != nil {
+                completionHandler(result: nil, error: error)
+            } else {
+                completionHandler(result: result, error: nil)
+                
+            }
+        })
+    }
+    
     // set annotations for map with users data
     func createAnnotations(users: [StudentInformation], mapView: MKMapView) {
         for user in users {
@@ -78,6 +112,45 @@ extension UdacityClient {
             annotation.subtitle = user.mediaURL
             
             mapView.addAnnotation(annotation)
+        }
+    }
+    
+    // logout request from udacity
+    func logoutRequest(completionHandler: (result: AnyObject?, error: NSError?)->Void) {
+        let request = NSMutableURLRequest(URL: NSURL(string: Constants.UdacityBaseURL + Methods.CreateSession)!)
+        request.HTTPMethod = "DELETE"
+        var xsrfCookie: NSHTTPCookie? = nil
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        for cookie in sharedCookieStorage.cookies as! [NSHTTPCookie] {
+            if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+        }
+        if let xsrfCookie = xsrfCookie {
+            request.addValue(xsrfCookie.value!, forHTTPHeaderField: "X-XSRF-Token")
+        }
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            if error != nil {
+                completionHandler(result: nil, error: error)
+            }
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+            // println(NSString(data: newData, encoding: NSUTF8StringEncoding))
+            completionHandler(result: newData, error: nil)
+        }
+        task.resume()
+    }
+    
+    // logout user from udacity
+    func logout(viewController: AnyObject) {
+        UdacityClient.sharedInstance().logoutRequest { (result, error) -> Void in
+            if error != nil {
+                UdacityClient.sharedInstance().showAlert(error!, viewController: viewController)
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), {
+                    let loginView : LoginViewController = viewController.storyboard?!.instantiateViewControllerWithIdentifier("LoginView") as! LoginViewController
+                    viewController.presentViewController(loginView, animated: true, completion: nil)
+                })
+            }
         }
     }
 }
